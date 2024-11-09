@@ -6,87 +6,81 @@
 /*   By: iezzam <iezzam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 04:19:58 by iezzam            #+#    #+#             */
-/*   Updated: 2024/11/08 17:50:34 by iezzam           ###   ########.fr       */
+/*   Updated: 2024/11/09 15:18:52 by iezzam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-// char	*get_next_line(int fd)
-// {
-// 	static char	*remainder;
-// 	char		buffer[BUFFER_SIZE + 1];
-// 	char		*newline_pos;
-// 	char		*temp;
-// 	ssize_t		bytes_read;
-
-// 	if (fd < 0 || BUFFER_SIZE <= 0)
-// 		return (NULL);
-
-// 	while ((bytes_read = read(fd, buffer, BUFFER_SIZE)) > 0)
-// 	{
-// 		buffer[bytes_read] = '\0';
-// 		if (!remainder)
-// 			remainder = ft_strdup(buffer);
-// 		else
-// 		{
-// 			temp = ft_strjoin(remainder, buffer);
-// 			free(remainder);
-// 			remainder = temp;
-// 		}
-// 		if ((newline_pos = ft_strchr(remainder, '\n')))
-// 		{
-// 			*newline_pos = '\0';
-// 			temp = ft_strdup(remainder);
-// 			remainder = ft_strdup(newline_pos + 1);
-// 			return (temp);
-// 		}
-// 	}
-// 	if (remainder && *remainder)
-// 	{
-// 		temp = ft_strdup(remainder);
-// 		free(remainder);
-// 		remainder = NULL;
-// 		return (temp);
-// 	}
-// 	free(remainder);
-// 	remainder = NULL;
-// 	return (NULL);
-// }
-
-int	main(void)
+static char	*_read_and_append(int fd, char *buffer, char *result)
 {
-	int fd;
-	int fd1;
-	int fd2;
-	int fd3;
-	char *line;
+	int		read_line;
+	char	*temp;
 
-	// Open files with correct mode for creation (read and write permission)
-	fd1 = open("./txt/text0.txt", O_RDONLY | O_CREAT, S_IRUSR | S_IWUSR);
-	fd = open("./txt/text0.txt", O_RDONLY | O_CREAT, S_IRUSR | S_IWUSR);
-	fd2 = open("./txt/text0.txt", O_RDONLY | O_CREAT, S_IRUSR | S_IWUSR);
-	fd3 = open("./txt/text2.txt", O_RDONLY | O_CREAT, S_IRUSR | S_IWUSR);
+	read_line = 1;
+	while ((read_line = read(fd, buffer, BUFFER_SIZE)) > 0)
+	{
+		if (read_line == -1)
+			return (free(buffer), NULL);
+		else if (read_line == 0)
+			break ;
+		buffer[read_line] = '\0';
+		if (!result)
+		{
+			result = ft_strdup("");
+			if (!result)
+				return (free(buffer), NULL);
+		}
+		temp = ft_strjoin(result, buffer);
+		free(result);
+		result = temp;
+		if (!result)
+			return (free(buffer), NULL);
+		if (ft_strchr(buffer, '\n'))
+			break ;
+	}
+	return (free(buffer), result);
+}
 
-	// Print file descriptors
-	printf("%d\n", fd1);
-	printf("%d\n", fd);
-	printf("%d\n", fd2);
-	printf("%d\n", fd3);
-	char *a = get_next_line(fd1);
-	char *a = get_next_line(fd1);
-	// Uncomment and implement get_next_line and ft_strlen functions if needed
-	// while ((line = get_next_line(fd)) != NULL)
-	// {
-	//     write(1, line, ft_strlen(line));
-	//     free(line);
-	// }
+static char	*_see_fine_line(char *line)
+{
+	size_t	count;
+	char	*backup;
 
-	// Close the file descriptors
-	close(fd);
-	close(fd1);
-	close(fd2);
+	count = 0;
+	while (line[count] && line[count] != '\n')
+		count++;
+	if (line[count] == '\0')
+		return (NULL);
+	backup = ft_substr(line, count + 1, ft_strlen(line) - count);
+	if (!backup)
+		return (free(line), NULL);
+	if (*backup == '\0')
+		backup = (free(backup), NULL);
+	line[count + 1] = '\0';
+	return (backup);
+}
 
-	printf("------------------------------\n");
-	return (0);
+char	*get_next_line(int fd)
+{
+	char		*line;
+	char		*buffer;
+	static char	*result = NULL;
+
+	if (fd < 0 || fd > FOPEN_MAX || BUFFER_SIZE <= 0 || BUFFER_SIZE >= INT_MAX)
+		return (NULL);
+	if (!(buffer = malloc(BUFFER_SIZE + 1)))
+		return (NULL);
+	line = _read_and_append(fd, buffer, result);
+	if (!line)
+	{
+		free(result);
+		result = NULL;
+		return (NULL);
+	}
+	printf("result: %s", result);
+	printf("\n---------*\nline: \n%s\nresult: %s\n---------*\n", line, result);
+	result = _see_fine_line(line);
+	printf("\nresult: %s", result);
+	return (line);
 }

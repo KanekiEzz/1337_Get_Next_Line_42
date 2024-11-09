@@ -15,14 +15,14 @@ $(NAME): $(OBJS)
 %.o: %.c 	get_next_line.h
 			$(CC) $(CFLAGS) -c $< -o $@
 
-# all: $(NAME)
+all: $(NAME)
 
-# clean:
-# 		$(RM) $(OBJS)
+clean:
+		$(RM) $(OBJS)
 
-# fclean: clean
-# 		$(RM) $(NAME)
+fclean: clean
+		$(RM) $(NAME)
 
-# re : fclean all
+re : fclean all
 
-# .PHONY: clean 
+.PHONY: clean 
