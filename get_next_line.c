@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: iezzam <iezzam@student.42.fr>              +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 04:19:58 by iezzam            #+#    #+#             */
-/*   Updated: 2024/11/09 15:18:52 by iezzam           ###   ########.fr       */
+/*   Updated: 2024/11/11 17:05:57 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*_read_and_append(int fd, char *buffer, char *result)
+static char *_read_and_append(int fd, char *buffer, char *result)
 {
-	int		read_line;
-	char	*temp;
+	int read_line;
+	char *temp;
 
 	read_line = 1;
 	while ((read_line = read(fd, buffer, BUFFER_SIZE)) > 0)
@@ -23,7 +23,7 @@ static char	*_read_and_append(int fd, char *buffer, char *result)
 		if (read_line == -1)
 			return (free(buffer), NULL);
 		else if (read_line == 0)
-			break ;
+			break;
 		buffer[read_line] = '\0';
 		if (!result)
 		{
@@ -37,15 +37,15 @@ static char	*_read_and_append(int fd, char *buffer, char *result)
 		if (!result)
 			return (free(buffer), NULL);
 		if (ft_strchr(buffer, '\n'))
-			break ;
+			break;
 	}
 	return (free(buffer), result);
 }
 
-static char	*_see_fine_line(char *line)
+static char *_see_fine_line(char *line)
 {
-	size_t	count;
-	char	*backup;
+	size_t count;
+	char *backup;
 
 	count = 0;
 	while (line[count] && line[count] != '\n')
@@ -61,11 +61,11 @@ static char	*_see_fine_line(char *line)
 	return (backup);
 }
 
-char	*get_next_line(int fd)
+char *get_next_line(int fd)
 {
-	char		*line;
-	char		*buffer;
-	static char	*result = NULL;
+	char *line;
+	char *buffer;
+	static char *result = NULL;
 
 	if (fd < 0 || fd > FOPEN_MAX || BUFFER_SIZE <= 0 || BUFFER_SIZE >= INT_MAX)
 		return (NULL);
@@ -78,9 +78,23 @@ char	*get_next_line(int fd)
 		result = NULL;
 		return (NULL);
 	}
-	printf("result: %s", result);
-	printf("\n---------*\nline: \n%s\nresult: %s\n---------*\n", line, result);
+	printf("\n---------*\n");
+	printf("result: %s\n", result);
+	printf("line: \n%s\nresult: %s", line, result);
+	printf("\n---------*\n");
 	result = _see_fine_line(line);
-	printf("\nresult: %s", result);
+	printf("\n---------*\n");
+	printf("result: %s\n", result);
+	printf("line: \n%s\nresult: %s", line, result);
+	printf("\n---------*\n");
+
+	// result = _see_fine_line(line);
+	// printf("\nresult: %s", result);
+
+	// printf("\n---------*\n");
+
+	// printf("\nresult: %s", result);
+	// printf("\n---------*\n");
+
 	return (line);
 }
