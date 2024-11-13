@@ -6,30 +6,32 @@
 /*   By: iezzam <iezzam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 04:19:58 by iezzam            #+#    #+#             */
-/*   Updated: 2024/11/13 08:40:46 by iezzam           ###   ########.fr       */
+/*   Updated: 2024/11/13 21:17:46 by iezzam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	ft_free(void *ptr)
+void	ft_free(void **ptr)
 {
-	if (ptr)
-		free(ptr);
-	ptr = NULL;
+	if (*ptr)
+	{
+		free(*ptr);
+		*ptr = NULL;
+	}
 }
 
 static char	*_strjoin_save(char **_ptr_li_t_save, char *buffer)
 {
-	char	*save_ptr_tmp;
+	char	*save_ptr_temp;
 
-	save_ptr_tmp = ft_strjoin(*_ptr_li_t_save, buffer);
-	if (!save_ptr_tmp)
+	save_ptr_temp = ft_strjoin(*_ptr_li_t_save, buffer);
+	if (!save_ptr_temp)
 	{
-		free(buffer);
+		ft_free((void **)&buffer);
 		return (NULL);
 	}
-	return (save_ptr_tmp);
+	return (save_ptr_temp);
 }
 
 char *_handel_last_ptr_li_t_save(char **_ptr_li_t_save, size_t count)
@@ -40,16 +42,15 @@ char *_handel_last_ptr_li_t_save(char **_ptr_li_t_save, size_t count)
 		if (count == 0)
 			return (NULL);
 		line = ft_strdup(*_ptr_li_t_save);
-		// if (!line)
-		// 	return NULL;
-		free(*_ptr_li_t_save);
-		*_ptr_li_t_save = NULL;
+		if (!line)
+			return NULL;
+		ft_free((void **)_ptr_li_t_save);
 		return (line);
 	}
 	return NULL;
 }
 
-char	*_see_fine_(char **_ptr_li_t_save)
+char	*_see_line_(char **_ptr_li_t_save)
 {
 	size_t	count;
 	char	*backup;
@@ -63,16 +64,16 @@ char	*_see_fine_(char **_ptr_li_t_save)
 	line = _handel_last_ptr_li_t_save(_ptr_li_t_save, count);
 	if (line)
 		return line;
-	line = ft_substr(*_ptr_li_t_save, 0, count);
+	line = ft_substr(*_ptr_li_t_save, 0, count + ((*_ptr_li_t_save)[count] == '\n' ? 1 : 0));
 	if (!line)
-		return (free(*_ptr_li_t_save), NULL);
+		return (ft_free((void **)_ptr_li_t_save), NULL);
 	backup = ft_substr(*_ptr_li_t_save, count + 1, ft_strlen(*_ptr_li_t_save)
 			- count - 1);
 	// if (!backup)
 	// 	backup = (free(*_ptr_li_t_save), free(line), NULL);
-	free(*_ptr_li_t_save);
+	ft_free((void **)_ptr_li_t_save);
 	if (backup && *backup == '\0')
-		return (free(backup), NULL);
+		ft_free((void **)&backup);
 	*_ptr_li_t_save = backup;
 	return (line);
 }
@@ -84,7 +85,7 @@ char	*_ptr_li_t_save_null(char **_ptr_li_t_save, char *buffer)
 		*_ptr_li_t_save = ft_strdup("");
 		if (!*_ptr_li_t_save)
 		{
-			free(buffer);
+			free((void **)buffer);
 			return (NULL);
 		}
 	}
@@ -94,30 +95,28 @@ char	*_ptr_li_t_save_null(char **_ptr_li_t_save, char *buffer)
 static char	*_read_fd_line(int fd, char *buffer, char **_ptr_li_t_save)
 {
 	int		read_line;
-	char	*save_ptr_tmp;
-	char	*line_ptr;
+	char	*save_ptr_temp;
 
 	while (1)
 	{
 		read_line = read(fd, buffer, BUFFER_SIZE);
 		if (read_line == -1)
-			return (free(buffer), NULL);
+			return (ft_free((void **)buffer), NULL);
 		if (read_line == 0)
 			break ;
 		buffer[read_line] = '\0';
 		if (!_ptr_li_t_save_null(_ptr_li_t_save, buffer))
-			return (free(buffer), NULL);
-		save_ptr_tmp = _strjoin_save(_ptr_li_t_save, buffer);
-		if (!save_ptr_tmp)
-			return (free(buffer), free(_ptr_li_t_save), NULL);
-		free(*_ptr_li_t_save);
-		*_ptr_li_t_save = save_ptr_tmp;
+			return (NULL);
+		save_ptr_temp = _strjoin_save(_ptr_li_t_save, buffer);
+		if (!save_ptr_temp)
+			return (ft_free((void **)&buffer), NULL);
+		ft_free((void **)_ptr_li_t_save);
+		*_ptr_li_t_save = save_ptr_temp;
 		if (ft_strchr(*_ptr_li_t_save, '\n'))
 			break ;
 	}
-	free(buffer);
-	line_ptr = _see_fine_(_ptr_li_t_save);
-	return (line_ptr);
+	ft_free((void **)&buffer);
+	return (_see_line_(_ptr_li_t_save));
 }
 
 char	*get_next_line(int fd)
@@ -132,7 +131,5 @@ char	*get_next_line(int fd)
 	if (!buffer)
 		return (NULL);
 	line_ptr = _read_fd_line(fd, buffer, &_ptr_li_t_save);
-	// if (!line_ptr)
-	// 	return (NULL);
 	return (line_ptr);
 }

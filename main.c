@@ -18,21 +18,20 @@ int    main(void)
 {
 	// atexit(l);
     int        fd;
-    char    *line;
+    // char    *line;
 
     fd = open("text.txt", O_RDONLY);
-    line = get_next_line(fd);
-
-    while (line != NULL)
-    {
-        // write(1, "\n", 1);
-        write(1, "(", 1);
-        ft_puts(line);
-        write(1, ")", 1);
-        write(1, "\n", 1);
-        free(line);
-        line = get_next_line(fd);
-    }
+    printf("%s\n", get_next_line(fd));
     close(fd);
+    printf("%s\n", get_next_line(fd));
+    // while (line != NULL)
+    // {
+    //     // write(1, "\n", 1);
+    //     write(1, "(", 1);
+    //     ft_puts(line);
+    //     free(line);
+    //     line = get_next_line(fd);
+    // }
+    // close(fd);
     return (0);
 }
