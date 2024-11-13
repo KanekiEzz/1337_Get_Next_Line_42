@@ -6,7 +6,7 @@
 /*   By: iezzam <iezzam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 04:19:58 by iezzam            #+#    #+#             */
-/*   Updated: 2024/11/13 21:17:46 by iezzam           ###   ########.fr       */
+/*   Updated: 2024/11/14 00:33:55 by iezzam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,13 +64,12 @@ char	*_see_line_(char **_ptr_li_t_save)
 	line = _handel_last_ptr_li_t_save(_ptr_li_t_save, count);
 	if (line)
 		return line;
-	line = ft_substr(*_ptr_li_t_save, 0, count + ((*_ptr_li_t_save)[count] == '\n' ? 1 : 0));
+	line = ft_substr(*_ptr_li_t_save, 0, count + ((*_ptr_li_t_save)[count] == '\n'));
 	if (!line)
 		return (ft_free((void **)_ptr_li_t_save), NULL);
-	backup = ft_substr(*_ptr_li_t_save, count + 1, ft_strlen(*_ptr_li_t_save)
-			- count - 1);
-	// if (!backup)
-	// 	backup = (free(*_ptr_li_t_save), free(line), NULL);
+	backup = ft_substr(*_ptr_li_t_save, count + 1, ft_strlen(*_ptr_li_t_save) - count - 1);
+	if (!backup)
+		backup = (free(*_ptr_li_t_save), free(line), NULL);
 	ft_free((void **)_ptr_li_t_save);
 	if (backup && *backup == '\0')
 		ft_free((void **)&backup);
@@ -85,7 +84,7 @@ char	*_ptr_li_t_save_null(char **_ptr_li_t_save, char *buffer)
 		*_ptr_li_t_save = ft_strdup("");
 		if (!*_ptr_li_t_save)
 		{
-			free((void **)buffer);
+			free(buffer);
 			return (NULL);
 		}
 	}
@@ -100,9 +99,7 @@ static char	*_read_fd_line(int fd, char *buffer, char **_ptr_li_t_save)
 	while (1)
 	{
 		read_line = read(fd, buffer, BUFFER_SIZE);
-		if (read_line == -1)
-			return (ft_free((void **)buffer), NULL);
-		if (read_line == 0)
+		if (read_line <= 0)
 			break ;
 		buffer[read_line] = '\0';
 		if (!_ptr_li_t_save_null(_ptr_li_t_save, buffer))
