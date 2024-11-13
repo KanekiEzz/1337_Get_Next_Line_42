@@ -6,7 +6,7 @@
 /*   By: iezzam <iezzam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 04:19:58 by iezzam            #+#    #+#             */
-/*   Updated: 2024/11/13 02:27:38 by iezzam           ###   ########.fr       */
+/*   Updated: 2024/11/13 02:39:06 by iezzam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,18 @@ char *_see_fine_(char **_ptr_li_t_save)
 	return (line);
 }
 
+int _frre_ptr_li_t_save(char **_ptr_li_t_save, char *buffer)
+{
+	if (!*_ptr_li_t_save)
+	{
+			*_ptr_li_t_save = ft_strdup("");
+			if (!*_ptr_li_t_save)
+				return (free(buffer), NULL);
+	}
+	return 0;
+}
+
+
 static char *_read_fd_line(int fd, char *buffer, char **_ptr_li_t_save)
 {
 	int read_line;
@@ -57,16 +69,7 @@ static char *_read_fd_line(int fd, char *buffer, char **_ptr_li_t_save)
 		if (read_line == -1)
 			return (free(buffer), NULL);
 		if (read_line == 0)
-		{
-			if (*_ptr_li_t_save && **_ptr_li_t_save)
-			{
-				line_ptr = ft_strdup(*_ptr_li_t_save);
-				free(*_ptr_li_t_save);
-				*_ptr_li_t_save = NULL;
-				return (line_ptr);
-			}
 			break;
-		}
 		buffer[read_line] = '\0';
 		if (!*_ptr_li_t_save)
 		{
@@ -79,7 +82,7 @@ static char *_read_fd_line(int fd, char *buffer, char **_ptr_li_t_save)
 			return (free(buffer), NULL);
 		free(*_ptr_li_t_save);
 		*_ptr_li_t_save = save_ptr_tmp;
-		if (_strchr(*_ptr_li_t_save, '\n'))
+		if (ft_strchr(*_ptr_li_t_save, '\n'))
 			break;
 	}
 	free(buffer);
