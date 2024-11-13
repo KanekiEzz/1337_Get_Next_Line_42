@@ -6,7 +6,7 @@
 /*   By: iezzam <iezzam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 05:55:40 by iezzam            #+#    #+#             */
-/*   Updated: 2024/11/09 09:22:13 by iezzam           ###   ########.fr       */
+/*   Updated: 2024/11/13 02:24:25 by iezzam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,20 +41,14 @@ char	*ft_strdup(const char *str)
 
 char	*ft_strchr(const char *str, int search)
 {
-	return (ft_memchr(str, search, ft_strlen(str) + 1));
-}
-
-void	*ft_memchr(const void *s, int c, size_t n)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < n)
+	while (*str)
 	{
-		if (*((unsigned char *)s + i) == (unsigned char)c)
-			return ((void *)(s + i));
-		i++;
+		if (*str == (char)search)
+			return ((char *)str);
+		str++;
 	}
+	if (*str == (char)search)
+		return ((char *)str);
 	return (NULL);
 }
 
@@ -87,8 +81,8 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	char *ptr;
-	size_t i;
+	char	*ptr;
+	size_t	i;
 
 	if (!s)
 		return (NULL);
@@ -96,7 +90,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 		return (ft_strdup(""));
 	if (len > ft_strlen(s) - start)
 		len = ft_strlen(s) - start;
-	ptr = (char *)malloc(sizeof(char) * (len + 1));
+	ptr = malloc(sizeof(char) * (len + 1));
 	if (!ptr)
 		return (NULL);
 	i = 0;
