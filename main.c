@@ -7,8 +7,9 @@ void	l(void)
 
 int	main(void)
 {
+	int	fd;
 
-	int fd = open("text.txt", O_RDONLY);
+	fd = open("text.txt", O_RDONLY);
 	printf("%s", get_next_line(fd));
 	close(fd);
 	printf("%s", get_next_line(fd));

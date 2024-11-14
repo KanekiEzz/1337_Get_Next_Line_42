@@ -6,7 +6,7 @@
 /*   By: iezzam <iezzam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 05:58:26 by iezzam            #+#    #+#             */
-/*   Updated: 2024/11/13 07:54:36 by iezzam           ###   ########.fr       */
+/*   Updated: 2024/11/14 05:13:55 by iezzam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@
 # include <string.h>
 # include <unistd.h>
 
+void	ft_free(void **ptr);
+char	*ft_handle_error(void **ptr_li_t_save, char **buffer);
+char	*_strjoin_save(char **_ptr_li_t_save, char *buffer);
 char	*get_next_line(int fd);
 size_t	ft_strlen(const char *s);
 char	*ft_strdup(const char *str);
