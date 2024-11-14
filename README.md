@@ -1,5 +1,10 @@
-# Get Next Line
-
+<h1 align="center">Get Next Line - 42 kaneki</h1>
+<p align="center">
+  <a href="https://github.com/KanekiEzz/1337_Get_Next_Line_42">
+    <img src="https://raw.githubusercontent.com/KanekiEzz/kaneki_badges/refs/heads/main/get_next_linem.png" alt="42 Badge">
+  </a>
+</p>
+<h2 >Introduction</h2>
 ## 📝 Description
 A C function that reads a line from a file descriptor. This project introduces the concept of static variables in C programming while creating a useful function for reading content line by line.
 
