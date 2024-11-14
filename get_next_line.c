@@ -6,7 +6,7 @@
 /*   By: iezzam <iezzam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 04:19:58 by iezzam            #+#    #+#             */
-/*   Updated: 2024/11/14 06:13:48 by iezzam           ###   ########.fr       */
+/*   Updated: 2024/11/14 16:31:34 by iezzam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,15 @@ char	*_strjoin_save(char **_ptr_li_t_save, char *buffer)
 {
 	char	*save_ptr_temp;
 
+	if (!*_ptr_li_t_save)
+	{
+		*_ptr_li_t_save = ft_strdup("");
+		if (!*_ptr_li_t_save)
+		{
+			free(buffer);
+			return (NULL);
+		}
+	}
 	save_ptr_temp = ft_strjoin(*_ptr_li_t_save, buffer);
 	if (!save_ptr_temp)
 	{
@@ -23,13 +32,6 @@ char	*_strjoin_save(char **_ptr_li_t_save, char *buffer)
 		return (NULL);
 	}
 	return (save_ptr_temp);
-}
-
-char	*ft_handle_error(void **ptr_li_t_save, char **buffer)
-{
-	ft_free(ptr_li_t_save);
-	ft_free((void **)buffer);
-	return (NULL);
 }
 
 void	ft_free(void **ptr)
@@ -41,35 +43,20 @@ void	ft_free(void **ptr)
 	}
 }
 
-char	*_handel_last_ptr_li_t_save(char **_ptr_li_t_save, size_t count)
+char	*_see_line_(char **_ptr_li_t_save, size_t count, char *backup,
+		char *line)
 {
-	char	*line;
-
-	if ((*_ptr_li_t_save)[count] == '\0')
-	{
-		if (count == 0)
-			return (NULL);
-		line = ft_strdup(*_ptr_li_t_save);
-		if (!line)
-			return (NULL);
-		ft_free((void **)_ptr_li_t_save);
-		return (line);
-	}
-	return (NULL);
-}
-
-char	*_see_line_(char **_ptr_li_t_save)
-{
-	size_t	count;
-	char	*backup;
-	char	*line;
-
 	if (!*_ptr_li_t_save)
 		return (ft_free((void **)_ptr_li_t_save), NULL);
-	count = 0;
 	while ((*_ptr_li_t_save)[count] && (*_ptr_li_t_save)[count] != '\n')
 		count++;
-	line = _handel_last_ptr_li_t_save(_ptr_li_t_save, count);
+	if (count == 0 || (*_ptr_li_t_save)[count] != '\0')
+		line = NULL;
+	else
+	{
+		line = ft_strdup(*_ptr_li_t_save);
+		ft_free((void **)_ptr_li_t_save);
+	}
 	if (line)
 		return (line);
 	line = ft_substr(*_ptr_li_t_save, 0, count
@@ -83,39 +70,27 @@ char	*_see_line_(char **_ptr_li_t_save)
 	ft_free((void **)_ptr_li_t_save);
 	if (backup && *backup == '\0')
 		ft_free((void **)&backup);
-	*_ptr_li_t_save = backup;
-	return (line);
+	return (*_ptr_li_t_save = backup, line);
 }
 
-char	*_ptr_li_t_save_null(char **_ptr_li_t_save, char *buffer)
+static char	*_read_fd_line(int fd, char *buffer, char **_ptr_li_t_save,
+		int read_line)
 {
-	if (!*_ptr_li_t_save)
-	{
-		*_ptr_li_t_save = ft_strdup("");
-		if (!*_ptr_li_t_save)
-		{
-			free(buffer);
-			return (NULL);
-		}
-	}
-	return (*_ptr_li_t_save);
-}
-
-static char	*_read_fd_line(int fd, char *buffer, char **_ptr_li_t_save)
-{
-	int		read_line;
+	size_t	count;
+	char	*backup;
+	char	*line;
 	char	*save_ptr_temp;
 
+	(1) && (count = 0, backup = NULL, line = 0);
 	while (1)
 	{
 		read_line = read(fd, buffer, BUFFER_SIZE);
 		if (read_line < 0)
-			return (ft_handle_error((void **)_ptr_li_t_save, &buffer));
+			return (ft_free((void **)_ptr_li_t_save), ft_free((void **)&buffer),
+				NULL);
 		if (read_line == 0)
 			break ;
 		buffer[read_line] = '\0';
-		if (!_ptr_li_t_save_null(_ptr_li_t_save, buffer))
-			return (NULL);
 		save_ptr_temp = _strjoin_save(_ptr_li_t_save, buffer);
 		if (!save_ptr_temp)
 			return (ft_free((void **)&buffer), NULL);
@@ -125,7 +100,7 @@ static char	*_read_fd_line(int fd, char *buffer, char **_ptr_li_t_save)
 			break ;
 	}
 	ft_free((void **)&buffer);
-	return (_see_line_(_ptr_li_t_save));
+	return (_see_line_(_ptr_li_t_save, count, backup, line));
 }
 
 char	*get_next_line(int fd)
@@ -133,12 +108,14 @@ char	*get_next_line(int fd)
 	char		*line_ptr;
 	char		*buffer;
 	static char	*_ptr_li_t_save = NULL;
+	int			read_line;
 
+	read_line = 0;
 	if (fd < 0 || fd > FOPEN_MAX || BUFFER_SIZE <= 0 || BUFFER_SIZE >= INT_MAX)
 		return (NULL);
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
-	line_ptr = _read_fd_line(fd, buffer, &_ptr_li_t_save);
+	line_ptr = _read_fd_line(fd, buffer, &_ptr_li_t_save, read_line);
 	return (line_ptr);
 }
