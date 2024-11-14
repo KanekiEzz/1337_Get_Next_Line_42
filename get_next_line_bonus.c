@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: iezzam <iezzam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 04:19:58 by iezzam            #+#    #+#             */
-/*   Updated: 2024/11/15 00:12:00 by iezzam           ###   ########.fr       */
+/*   Updated: 2024/11/15 00:29:49 by iezzam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void	ft_free(void **ptr)
 {
@@ -109,7 +109,7 @@ char	*get_next_line(int fd)
 {
 	char		*line_ptr;
 	char		*buffer;
-	static char	*_ptr_li_t_save;
+	static char	*_ptr_li_t_save[OPEN_MAX];
 	int			read_line;
 
 	read_line = 0;
@@ -118,6 +118,6 @@ char	*get_next_line(int fd)
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
-	line_ptr = _read_fd_line(fd, buffer, &_ptr_li_t_save, read_line);
+	line_ptr = _read_fd_line(fd, buffer, &_ptr_li_t_save[fd], read_line);
 	return (line_ptr);
 }
