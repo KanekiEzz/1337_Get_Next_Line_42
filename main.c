@@ -13,8 +13,8 @@ int	main(void)
 	printf("%s", get_next_line(fd));
 	close(fd);
 	printf("%s", get_next_line(fd));
-	// fd = open("text.txt", O_RDONLY);
-	// printf("%s", get_next_line(fd));
+	fd = open("/dev/urandom", O_RDONLY);
+	printf("%s", get_next_line(fd));
 	// while (line != NULL)
 	// {
 	// 	printf("%s",line);
