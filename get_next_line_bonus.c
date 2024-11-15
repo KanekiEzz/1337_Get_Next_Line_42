@@ -6,7 +6,7 @@
 /*   By: iezzam <iezzam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 04:19:58 by iezzam            #+#    #+#             */
-/*   Updated: 2024/11/15 00:29:49 by iezzam           ###   ########.fr       */
+/*   Updated: 2024/11/16 00:36:26 by iezzam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,9 +113,9 @@ char	*get_next_line(int fd)
 	int			read_line;
 
 	read_line = 0;
-	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE <= 0 || BUFFER_SIZE >= INT_MAX)
+	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
-	buffer = malloc(BUFFER_SIZE + 1);
+	buffer = malloc((size_t)BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
 	line_ptr = _read_fd_line(fd, buffer, &_ptr_li_t_save[fd], read_line);
