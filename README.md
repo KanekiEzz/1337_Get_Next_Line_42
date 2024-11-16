@@ -79,3 +79,7 @@ cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 *.c
 - C compiler
 - Unix-based system (for file descriptors)
 - Make (for compilation)
+
+
+
+;; while true; do leaks a.out; sleep 2; clear; done
