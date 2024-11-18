@@ -81,5 +81,5 @@ cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 *.c
 - Make (for compilation)
 
 
-
-# while true; do leaks a.out; sleep 2; clear; done
+## leaks
+- while true; do leaks a.out; sleep 2; clear; done
