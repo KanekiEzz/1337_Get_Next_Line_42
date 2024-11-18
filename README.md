@@ -82,4 +82,4 @@ cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 *.c
 
 
 
-;; while true; do leaks a.out; sleep 2; clear; done
+# while true; do leaks a.out; sleep 2; clear; done

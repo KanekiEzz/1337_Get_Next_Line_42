@@ -6,7 +6,7 @@
 /*   By: iezzam <iezzam@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/07 04:19:58 by iezzam            #+#    #+#             */
-/*   Updated: 2024/11/16 00:36:26 by iezzam           ###   ########.fr       */
+/*   Updated: 2024/11/18 16:11:26 by iezzam           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,17 @@ static char	*_see_line_(char **_ptr_li_t_save, size_t count, char *backup,
 		return (ft_free((void **)_ptr_li_t_save), NULL);
 	while ((*_ptr_li_t_save)[count] && (*_ptr_li_t_save)[count] != '\n')
 		count++;
-	if (count == 0 || (*_ptr_li_t_save)[count] != '\0')
-		line = NULL;
-	else
+	if ((*_ptr_li_t_save)[count] == '\0')
 	{
 		line = ft_strdup(*_ptr_li_t_save);
+		if (!line)
+			return (ft_free((void **)_ptr_li_t_save), NULL);
 		ft_free((void **)_ptr_li_t_save);
-	}
-	if (line)
 		return (line);
-	line = ft_substr(*_ptr_li_t_save, 0, count
-			+ ((*_ptr_li_t_save)[count] == '\n'));
+	}
+	line = ft_substr(*_ptr_li_t_save, 0, count + 1);
 	if (!line)
-		return (ft_free((void **)&_ptr_li_t_save), NULL);
+		return (ft_free((void **)_ptr_li_t_save), NULL);
 	backup = ft_substr(*_ptr_li_t_save, count + 1, ft_strlen(*_ptr_li_t_save)
 			- count - 1);
 	if (!backup)
@@ -113,7 +111,7 @@ char	*get_next_line(int fd)
 	int			read_line;
 
 	read_line = 0;
-	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE <= 0)
+	if (fd < 0 || fd > OPEN_MAX || BUFFER_SIZE >= INT_MAX || BUFFER_SIZE <= 0)
 		return (NULL);
 	buffer = malloc((size_t)BUFFER_SIZE + 1);
 	if (!buffer)
